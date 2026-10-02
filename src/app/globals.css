@@ -1,26 +1,139 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ═══ HIERRO — ahora es la BASE (dark mode) ═══
+     950 ≈ antracita #121212 cálido · 900 panel · 800 borde */
+  --color-hierro-950: oklch(0.165 0.007 60);
+  --color-hierro-900: oklch(0.21 0.009 60);
+  --color-hierro-800: oklch(0.265 0.010 58);
+  --color-hierro-700: oklch(0.34 0.010 58);
+  --color-hierro-500: oklch(0.50 0.011 60);
+  --color-hierro-400: oklch(0.62 0.010 62);
+
+  /* ═══ YESO — ahora es el color del TEXTO ═══ */
+  --color-yeso-50:  oklch(0.97 0.006 80);
+  --color-yeso-100: oklch(0.945 0.009 78);
+  --color-yeso-200: oklch(0.90 0.013 74);
+  --color-yeso-300: oklch(0.84 0.016 72);
+
+  /* ═══ FORJA — brasa. Único color cálido ═══ */
+  --color-forja-400: oklch(0.78 0.160 62);
+  --color-forja-500: oklch(0.685 0.185 48);
+  --color-forja-600: oklch(0.585 0.190 38);
+  --color-forja-700: oklch(0.475 0.170 32);
+
+  /* ═══ LADRILLO — Torre de l'Aigua, Sabadell ═══ */
+  --color-ladrillo-500: oklch(0.56 0.11 32);
+  --color-ladrillo-600: oklch(0.46 0.10 30);
+
+  /* ═══ TIPOGRAFÍA ═══ */
+  --font-display: var(--font-forge-display), "Arial Narrow", sans-serif;
+  --font-sans:    var(--font-forge-sans), system-ui, sans-serif;
+  --font-mono:    var(--font-forge-mono), ui-monospace, monospace;
+
+  --text-tecnico: 0.68rem;
+  --text-tecnico--letter-spacing: 0.26em;
+
+  --text-body: clamp(1rem, 0.96rem + 0.25vw, 1.15rem);
+  --text-body--line-height: 1.65;
+
+  --text-lead: clamp(1.15rem, 1rem + 0.7vw, 1.6rem);
+  --text-lead--line-height: 1.45;
+
+  --text-h3: clamp(1.6rem, 1.2rem + 1.8vw, 2.6rem);
+  --text-h3--line-height: 1.1;
+  --text-h3--letter-spacing: -0.02em;
+
+  --text-h2: clamp(2.2rem, 1.4rem + 3.6vw, 4.6rem);
+  --text-h2--line-height: 0.98;
+  --text-h2--letter-spacing: -0.03em;
+
+  --text-h1: clamp(3rem, 1.1rem + 7.2vw, 8.2rem);
+  --text-h1--line-height: 0.88;
+  --text-h1--letter-spacing: -0.04em;
+
+  --text-mega: clamp(4rem, 0.5rem + 13vw, 15rem);
+  --text-mega--line-height: 0.82;
+  --text-mega--letter-spacing: -0.048em;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    background-color: var(--color-hierro-950);
+    color: var(--color-yeso-100);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+  }
+
+  ::selection {
+    background-color: var(--color-forja-500);
+    color: var(--color-hierro-950);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ═══ Fusión: tipografía × gradiente de brasa ═══ */
+@utility text-forge {
+  background-image: linear-gradient(
+    100deg in oklch,
+    var(--color-forja-400) 0%,
+    var(--color-forja-500) 42%,
+    var(--color-forja-600) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ═══ Subrayado de brasa ═══ */
+@utility link-forja {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    height: 1px;
+    width: 0;
+    background-color: var(--color-forja-500);
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+/* ═══ Campo de formulario oscuro ═══ */
+@utility campo-forja {
+  width: 100%;
+  background-color: oklch(0.97 0.006 80 / 0.04);
+  border: 1px solid oklch(0.90 0.013 74 / 0.14);
+  padding: 0.95rem 1.15rem;
+  color: var(--color-yeso-50);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  transition: border-color 0.3s, background-color 0.3s;
+
+  &::placeholder {
+    color: var(--color-hierro-400);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-forja-500);
+    background-color: oklch(0.97 0.006 80 / 0.06);
+  }
 }
